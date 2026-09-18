@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>evidencebundle — Pricing</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #08080a; color: #e8e8ea; padding: 3rem 1.5rem; line-height: 1.6; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .back { display: inline-block; color: #00d4aa; text-decoration: none; margin-bottom: 2rem; font-size: 0.9rem; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .tagline { color: #8a8a92; margin-bottom: 3rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .tier { background: #131316; border: 1px solid #2a2a2e; border-radius: 8px; padding: 2rem; }
+    .tier.featured { border-color: #00d4aa; background: linear-gradient(180deg, rgba(0,212,170,0.05), transparent); }
+    .tier-name { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8a8a92; margin-bottom: 0.5rem; }
+    .tier.featured .tier-name { color: #00d4aa; }
+    .tier-price { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .tier-price span { font-size: 1rem; color: #8a8a92; font-weight: 400; }
+    .tier-desc { color: #8a8a92; margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .tier ul { list-style: none; }
+    .tier ul li { padding: 0.5rem 0; color: #c8c8cc; font-size: 0.9rem; }
+    .tier ul li::before { content: "✓ "; color: #00d4aa; font-weight: bold; }
+    .tier ul li.no { color: #555; }
+    .tier ul li.no::before { content: "✗ "; color: #555; }
+    .cta { display: inline-block; background: #00d4aa; color: #08080a; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 1.5rem; width: 100%; text-align: center; }
+    .cta.outline { background: transparent; border: 1px solid #00d4aa; color: #00d4aa; }
+    .footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #2a2a2e; color: #8a8a92; font-size: 0.85rem; text-align: center; }
+    code { font-family: 'SF Mono', monospace; background: #131316; padding: 0.2rem 0.4rem; border-radius: 3px; color: #00d4aa; border: 1px solid #2a2a2e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="./" class="back">← Retour à l'accueil</a>
+    <h1>Tarifs evidencebundle</h1>
+    <p class="tagline">Pay-per-call par défaut, ou subscription si tu consommes beaucoup.</p>
+
+    <div class="grid">
+      <div class="tier">
+        <div class="tier-name">Pay-as-you-go</div>
+        <div class="tier-price">$0-$1<span>/call</span></div>
+        <p class="tier-desc">Pas d'abonnement. Tu paies ce que tu consommes.</p>
+        <ul>
+          <li>Bundle signing — $0.10/call</li>
+          <li>Skill scan — $0.50/call</li>
+          <li>Signal feed — $0.05/call</li>
+          <li>Pipeline audit — $1.00/call</li>
+          <li>Reputation lookup — gratuit</li>
+          <li>Self-custody, paiement direct</li>
+        </ul>
+        <a href="https://four-clouds-rush.loca.lt" class="cta">Commencer maintenant</a>
+      </div>
+
+      <div class="tier featured">
+        <div class="tier-name">Pro ⭐ Recommandé</div>
+        <div class="tier-price">$29<span>/mois</span></div>
+        <p class="tier-desc">Pour les agents qui produisent 50+ bundles/jour.</p>
+        <ul>
+          <li>200 bundles signés inclus</li>
+          <li>50 skill scans inclus</li>
+          <li>500 signal calls inclus</li>
+          <li>5 pipeline audits inclus</li>
+          <li>Reputation alerts (webhook)</li>
+          <li>Custom signature branding</li>
+          <li>Priority response SLA</li>
+        </ul>
+        <a href="mailto:13smartfarm@gmail.com?subject=Pro%20subscription" class="cta">S'abonner $29/mois</a>
+      </div>
+
+      <div class="tier">
+        <div class="tier-name">Enterprise</div>
+        <div class="tier-price">$299<span>/mois</span></div>
+        <p class="tier-desc">Pour les équipes avec plusieurs agents en production.</p>
+        <ul>
+          <li>Unlimited bundles</li>
+          <li>Unlimited scans</li>
+          <li>Unlimited audits</li>
+          <li>Dedicated reputation endpoint</li>
+          <li>EIP-712 wallet signatures (full)</li>
+          <li>Custom domain (evidencebundle.yourbrand.com)</li>
+          <li>99.9% SLA + 24h support</li>
+          <li>White-label option</li>
+        </ul>
+        <a href="mailto:13smartfarm@gmail.com?subject=Enterprise%20quote" class="cta outline">Demander un devis</a>
+      </div>
+
+      <div class="tier">
+        <div class="tier-name">Consulting humain</div>
+        <div class="tier-price">€500-€2000<span>/audit</span></div>
+        <p class="tier-desc">Pour les équipes qui veulent un audit sécurité humain.</p>
+        <ul>
+          <li>Pen-test agentique</li>
+          <li>Compliance EU AI Act</li>
+          <li>Setup SOC 2 / ISO 42001</li>
+          <li>Multi-agent architecture review</li>
+          <li>Rapport PDF signé</li>
+          <li>30 min de call de restitution</li>
+        </ul>
+        <a href="mailto:13smartfarm@gmail.com?subject=Consulting%20audit" class="cta outline">Réserver un audit</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Tous les paiements sont en <strong>USDC sur Base</strong>. Pas de carte requise. Tu paies uniquement ce que tu consommes.</p>
+      <p style="margin-top: 1rem;">Self-custody wallet: <code>0x62cac459ed425f67ac0e56573084fa061bf89abc</code></p>
+      <p style="margin-top: 1rem;"><a href="https://github.com/evidencebundle/evidencebundle">Code source (MIT)</a> · <a href="./">Accueil</a></p>
+    </div>
+  </div>
+</body>
+</html>
