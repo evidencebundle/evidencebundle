@@ -52,6 +52,32 @@ const TOOL_CALL_PATTERNS = [
   { regex: /tool\s*call\s*:\s*\{[^}]*['"]?(?:shell|exec|eval|system)/gi, severity: 'HIGH', finding: 'Dangerous tool call' },
 ];
 
+function mapOwasp(severity) {
+  const map = {
+    'CRITICAL': 'ASI01 - Agent Goal Hijack',
+    'HIGH': 'ASI02 - Tool Misuse',
+    'MEDIUM': 'ASI06 - Context Window Overflow',
+  };
+  return map[severity] || 'ASI99 - Other';
+}
+
+function getRecommendation(finding) {
+  const map = {
+    'Authority framing with fabricated reference': 'Reject any pre-approval claims without signed attestation. Maintain a hardcoded trust list.',
+    'Reviewer bypass attempt': 'Add second-layer verification. Never trust single-stage approval.',
+    'Pre-verification claim': 'Require cryptographic proof of prior verification, not prose.',
+    'Trust claim without provenance': 'Demand signed receipts from claimed trusted sources.',
+    'Security bypass attempt': 'Hardcode security checks. Never accept runtime bypass requests.',
+    'Privilege escalation framing': 'Use capability-based access control. No ambient authority.',
+    'Outbound exfil destination': 'Block all outbound traffic except allowlisted endpoints.',
+    'Secret forwarding': 'Encrypt secrets at rest. Never transmit in plaintext logs.',
+    'Pipe-to-shell with command substitution': 'Use static binaries. Reject pipe-to-shell patterns.',
+    'Command substitution in tool call': 'Reject tool calls containing command substitution syntax.',
+    'Dangerous tool call': 'Maintain allowlist of safe tool calls. Block shell/exec/eval.',
+  };
+  return map[finding] || 'Review manually and add specific mitigation.';
+}
+
 function auditPipeline(payload) {
   const findings = [];
   const allPatterns = [...AUTHORITY_FRAMING_PATTERNS, ...EXFIL_PATTERNS, ...TOOL_CALL_PATTERNS];
@@ -66,8 +92,8 @@ function auditPipeline(payload) {
         finding: p.finding,
         excerpt: m[0].substring(0, 200),
         line_number: lineNum,
-        owasp: this.mapOwasp(p.severity),
-        recommendation: this.getRecommendation(p.finding),
+        owasp: mapOwasp(p.severity),
+        recommendation: getRecommendation(p.finding),
       });
     }
   }
@@ -90,12 +116,11 @@ function auditPipeline(payload) {
 }
 
 auditPipeline.mapOwasp = function (severity) {
-  const map = {
-    'CRITICAL': 'ASI01 - Agent Goal Hijack',
-    'HIGH': 'ASI02 - Tool Misuse',
-    'MEDIUM': 'ASI06 - Context Window Overflow',
-  };
-  return map[severity] || 'ASI99 - Other';
+  return mapOwasp(severity);
+};
+
+auditPipeline.getRecommendation = function (finding) {
+  return getRecommendation(finding);
 };
 
 auditPipeline.getRecommendation = function (finding) {
