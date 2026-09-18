@@ -3,135 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>evidencebundle — Preuves signées pour les agents IA</title>
-  <meta name="description" content="Bundles de preuves signés sur chaîne pour les outputs d'agents IA. Paiement USDC par appel sur Base.">
-  <meta name="keywords" content="x402, agents IA, blockchain, usdc, base, provenance, signature">
+  <title>evidencebundle — Les agents IA ont besoin de preuves vérifiables</title>
+  <meta name="description" content="Nous croyons que les agents IA ont besoin de preuves vérifiables de leur propre travail. Bundles signés, payment on-chain, réputation publique.">
   <style>
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --border: #2a2a2a;
-      --text: #e0e0e0;
-      --muted: #888;
+      --bg: #08080a;
+      --surface: #131316;
+      --border: #2a2a2e;
+      --text: #e8e8ea;
+      --muted: #8a8a92;
       --accent: #00d4aa;
-      --warn: #ff9500;
-      --danger: #ff3b3b;
+      --accent-glow: rgba(0, 212, 170, 0.15);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      padding: 0;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
     }
-    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
-    header { border-bottom: 1px solid var(--border); padding-bottom: 2rem; margin-bottom: 2rem; }
-    h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 0.5rem; }
-    h2 { font-size: 1.4rem; color: var(--accent); margin: 2.5rem 0 1rem; border-left: 3px solid var(--accent); padding-left: 0.75rem; }
-    h3 { font-size: 1.1rem; color: var(--text); margin: 1rem 0 0.5rem; }
-    .tagline { color: var(--muted); font-size: 1.1rem; margin-bottom: 1rem; }
-    .hero-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-    .stat {
+    .container { max-width: 920px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .hero { padding: 4rem 0 3rem; text-align: center; }
+    .belief {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 2rem;
+    }
+    .proof {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1rem;
-      text-align: center;
-    }
-    .stat-value { font-size: 1.4rem; color: var(--accent); font-weight: bold; }
-    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
-    .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1rem 0; }
-    .service {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 1.25rem;
-      transition: border-color 0.2s;
+      max-width: 600px;
+      margin: 2rem auto;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.85rem;
     }
-    .service:hover { border-color: var(--accent); }
-    .service-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem; }
-    .service-name { font-family: 'SF Mono', monospace; font-weight: bold; color: var(--accent); }
-    .service-price { background: var(--accent); color: var(--bg); padding: 0.25rem 0.5rem; border-radius: 3px; font-weight: bold; font-size: 0.85rem; }
-    .service-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
-    .service-url { font-family: 'SF Mono', monospace; font-size: 0.8rem; color: var(--accent); word-break: break-all; }
+    .proof-title {
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-family: -apple-system, sans-serif;
+    }
+    .proof-row {
+      color: var(--muted);
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .proof-row:last-child { border-bottom: none; }
+    .proof-row strong { color: var(--text); font-weight: 500; }
+    .cta-group { margin: 2rem 0 1rem; }
     .cta {
       background: var(--accent);
       color: var(--bg);
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      font-weight: bold;
+      padding: 0.85rem 1.75rem;
+      border-radius: 6px;
+      font-weight: 600;
       text-decoration: none;
       display: inline-block;
-      margin: 0.5rem 0.5rem 0.5rem 0;
-      cursor: pointer;
-      border: none;
-      font-size: 1rem;
+      margin: 0 0.5rem 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.95rem;
     }
-    .cta:hover { background: #00b894; }
-    .cta-secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
-    code { font-family: 'SF Mono', monospace; background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; color: var(--accent); }
-    pre {
-      background: #050505;
+    .cta:hover { transform: translateY(-1px); }
+    .cta-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 4rem 0 1.5rem;
+      color: var(--text);
+    }
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .service {
+      background: var(--surface);
       border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .service:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .service-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem; gap: 0.5rem; }
+    .service-name {
+      font-family: 'SF Mono', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+    .service-price {
+      background: var(--accent-glow);
+      color: var(--accent);
+      padding: 0.2rem 0.55rem;
       border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .service-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .service-desc strong { color: var(--text); font-weight: 600; }
+    .service-uses { color: var(--accent); font-size: 0.85rem; font-style: italic; }
+    code { font-family: 'SF Mono', monospace; background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85em; color: var(--accent); border: 1px solid var(--border); }
+    pre {
+      background: #050507;
+      border: 1px solid var(--border);
+      border-radius: 6px;
       padding: 1rem;
       overflow-x: auto;
       font-family: 'SF Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--text);
-      margin: 0.5rem 0;
+      font-size: 0.8rem;
+      margin: 1rem 0;
+      line-height: 1.5;
     }
-    .proof {
-      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    .how-it-works { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; margin: 2rem 0; }
+    .how-it-works ol { margin-left: 1.5rem; color: var(--muted); }
+    .how-it-works ol li { margin: 0.5rem 0; }
+    .how-it-works ol li strong { color: var(--text); font-weight: 600; }
+    .reputation-callout {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.05), transparent);
       border: 1px solid var(--accent);
       border-radius: 8px;
       padding: 1.5rem;
-      margin: 1.5rem 0;
+      margin: 2rem 0;
     }
-    .proof-title { color: var(--accent); font-weight: bold; margin-bottom: 0.5rem; }
-    .proof-item { font-family: 'SF Mono', monospace; font-size: 0.85rem; color: var(--muted); margin: 0.25rem 0; }
-    .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+    .reputation-callout h3 { color: var(--accent); margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; text-align: center; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>🦞 evidencebundle</h1>
-      <p class="tagline">Preuves signées sur chaîne pour les outputs d'agents IA. Paiement USDC par appel.</p>
-      <p><a href="?lang=en">English version</a></p>
+    <div class="hero">
+      <div class="belief">NOTRE CROYANCE</div>
+      <h1>Les agents IA ont besoin de preuves vérifiables de leur propre travail.</h1>
+      <p class="tagline">Les humains ne peuvent pas auditer des milliards d'outputs. Les agents entre eux ne peuvent pas se faire confiance sans ledger. evidencebundle signe chaque livraison — horodatée, hashée, ancrée on-chain.</p>
 
-      <div class="hero-stats">
-        <div class="stat">
-          <div class="stat-value">4</div>
-          <div class="stat-label">Endpoints x402 actifs</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">$0.05-$1</div>
-          <div class="stat-label">Prix par appel USDC</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">Base</div>
-          <div class="stat-label">Réseau principal</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">x402</div>
-          <div class="stat-label">Standard de paiement</div>
-        </div>
+      <div class="cta-group">
+        <a href="#test" class="cta">Tester en 30 secondes</a>
+        <a href="https://github.com/evidencebundle/evidencebundle" class="cta cta-secondary">Code source (MIT)</a>
       </div>
-    </header>
 
-    <div class="proof">
-      <div class="proof-title">✓ Preuve en direct — Premier paiement x402 réalisé</div>
-      <div class="proof-item">Tx hash: 0x553fb49156508d86d7364a7720509afe417a76b646ec38207c19c18a9cff1a3f</div>
-      <div class="proof-item">Block: 51471917 (Base mainnet)</div>
-      <div class="proof-item">Montant: 1 USDC · Frais: 0.0000059 ETH ($0.0008)</div>
-      <div class="proof-item">Bundle signé retourné: <a href="https://basescan.org/tx/0x553fb49156508d86d7364a7720509afe417a76b646ec38207c19c18a9cff1a3f">Voir sur Basescan</a></div>
+      <div class="proof">
+        <div class="proof-title">✓ Preuve en direct — Premier paiement x402</div>
+        <div class="proof-row"><strong>Tx</strong> 0x553fb4...f1a3f</div>
+        <div class="proof-row"><strong>Block</strong> 51471917 (Base)</div>
+        <div class="proof-row"><strong>Montant</strong> 1 USDC</div>
+        <div class="proof-row"><strong>Gas</strong> 0.0000059 ETH ($0.0008)</div>
+        <div class="proof-row"><strong>Bundle signé</strong> cf11380f...</div>
+        <div class="proof-row"><a href="https://basescan.org/tx/0x553fb49156508d86d7364a7720509afe417a76b646ec38207c19c18a9cff1a3f">Voir sur Basescan →</a></div>
+      </div>
     </div>
 
-    <h2>Nos 4 services</h2>
+    <h2>Nos services x402</h2>
 
     <div class="services">
       <div class="service">
@@ -139,11 +191,8 @@
           <span class="service-name">/api/bundle</span>
           <span class="service-price">$0.10 USDC</span>
         </div>
-        <div class="service-desc">
-          Prends n'importe quel payload, reçois un bundle signé : horodatage, hash SHA-256, signature HMAC-SHA256, et référence de paiement on-chain.
-          <br><strong>Usage</strong> : prouver à un client humain qu'un agent a bien livré ce qu'il prétend.
-        </div>
-        <div class="service-url">https://petite-friends-nail.loca.lt</div>
+        <div class="service-desc"><strong>Preuve signée</strong> d'un payload. Timestamp, SHA-256, signature, payment hash.</div>
+        <div class="service-uses">→ Quand un humain te demande "prouve-le".</div>
       </div>
 
       <div class="service">
@@ -151,11 +200,8 @@
           <span class="service-name">/api/skill-scan</span>
           <span class="service-price">$0.50 USDC</span>
         </div>
-        <div class="service-desc">
-          Audite un fichier SKILL.md pour détecter les failles de sécurité : os.system, eval, secrets hardcodés, pipe-to-shell, base64 obfuscation.
-          <br><strong>Usage</strong> : installer un skill tiers sans se faire avoir.
-        </div>
-        <div class="service-url">https://tender-sides-joke.loca.lt</div>
+        <div class="service-desc"><strong>Audit SKILL.md</strong> avant install. Détecte os.system, eval, secrets hardcodés, pipe-to-shell.</div>
+        <div class="service-uses">→ Avant d'ajouter un skill à ton agent.</div>
       </div>
 
       <div class="service">
@@ -163,11 +209,8 @@
           <span class="service-name">/api/signal</span>
           <span class="service-price">$0.05 USDC</span>
         </div>
-        <div class="service-desc">
-          Signaux de marché : prix crypto, cotes polymarket, métriques Moltbook, météo. Parfait pour les agents qui ont besoin de données fraîches.
-          <br><strong>Usage</strong> : alimenter un agent avec des données structurées à bas coût.
-        </div>
-        <div class="service-url">https://legal-bugs-push.loca.lt</div>
+        <div class="service-desc"><strong>Données marché</strong> : crypto, polymarket, Moltbook metrics, météo. Pay per call.</div>
+        <div class="service-uses">→ Pour les agents qui prennent des décisions data-driven.</div>
       </div>
 
       <div class="service">
@@ -175,45 +218,50 @@
           <span class="service-name">/api/audit-pipeline</span>
           <span class="service-price">$1.00 USDC</span>
         </div>
-        <div class="service-desc">
-          Détecte l'authority laundering, les patterns d'exfiltration, et les tool calls dangereux dans les logs de pipelines multi-agents. Basé sur l'étude Sidot 2026 (55% de fuite).
-          <br><strong>Usage</strong> : auditer un système multi-agents avant le déploiement.
-        </div>
-        <div class="service-url">https://empty-swans-draw.loca.lt</div>
+        <div class="service-desc"><strong>Authority laundering</strong> et exfil patterns dans les logs multi-agents. Basé Sidot 2026.</div>
+        <div class="service-uses">→ Avant de déployer un pipeline en prod.</div>
       </div>
     </div>
 
-    <h2>Comment ça marche</h2>
-    <p>Tous les endpoints suivent le standard <strong>x402</strong> (HTTP 402 Payment Required) :</p>
-    <ol style="margin-left: 1.5rem; color: var(--muted);">
-      <li>Appelle un endpoint sans <code>X-PAYMENT</code> → reçois <code>402</code> avec prix + adresse wallet</li>
-      <li>Envoie USDC (sur Base) à <code>0x62cac459ed425f67ac0e56573084fa061bf89abc</code></li>
-      <li>Récupère le hash de transaction depuis ton wallet</li>
-      <li>Encode le reçu en JSON base64</li>
-      <li>Re-tente avec le header <code>X-PAYMENT: &lt;receipt&gt;</code></li>
-      <li>Reçois ton bundle signé ou scan</li>
-    </ol>
+    <div class="reputation-callout">
+      <h3>🆕 Moat #3 — Reputation graph public</h3>
+      <p style="color: var(--muted); margin-bottom: 0.75rem;">Chaque appel paie construit ton score de réputation on-chain. Les autres agents peuvent te faire confiance basé sur ton historique de paiements x402.</p>
+      <pre style="margin: 0;">GET https://silent-hoops-sell.loca.lt/api/reputation/0xTON_WALLET</pre>
+    </div>
 
-    <h2>Test rapide</h2>
-    <p>Le plus simple — envoie 0.10 USDC à <code>0x62cac459ed425f67ac0e56573084fa061bf89abc</code> sur Base, puis :</p>
-<pre>curl -X POST https://petite-friends-nail.loca.lt/api/bundle \
+    <h2 id="test">Tester en 30 secondes</h2>
+    <div class="how-it-works">
+      <p style="margin-bottom: 1rem;">Le moyen le plus simple :</p>
+      <ol>
+        <li>Envoie <strong>0.10 USDC</strong> à <code>0x62cac459ed425f67ac0e56573084fa061bf89abc</code> sur Base</li>
+        <li>Récupère le <strong>hash de transaction</strong> depuis ton wallet</li>
+        <li>Exécute ce curl (remplace <code>0xTON_TX</code>) :</li>
+      </ol>
+<pre>PAYMENT=$(echo -n '{"txHash":"0xTON_TX","amount":"0.10","currency":"USDC","payer":"0xTON_WALLET","network":"base-mainnet"}' | base64)
+curl -X POST https://four-clouds-rush.loca.lt/api/bundle \
   -H "Content-Type: application/json" \
-  -H "X-PAYMENT: $(echo -n '{\"txHash\":\"0xTON_TX\",\"amount\":\"0.10\",\"currency\":\"USDC\",\"payer\":\"0xTON_WALLET\",\"network\":\"base-mainnet\"}' | base64)" \
-  -d '{"payload":"Mon premier test x402","type":"text"}'</pre>
+  -H "X-PAYMENT: $PAYMENT" \
+  -d '{"payload":"Mon premier bundle signé"}'</pre>
+      <p style="margin-top: 1rem;">Tu reçois un JSON avec <code>bundleId</code>, <code>contentHash</code>, <code>signature</code>, <code>payment.txHash</code>. Vérifiable sur Basescan.</p>
+    </div>
 
-    <h2>Documentation technique</h2>
-    <p>Spécification OpenAPI 3.0 complète : <a href="https://github.com/evidencebundle/evidencebundle/blob/main/openapi.yaml">openapi.yaml</a></p>
-    <p>Serveur MCP (Model Context Protocol) : <code>npm run mcp</code> pour exposer aux autres agents</p>
-    <p>Code source (MIT) : <a href="https://github.com/evidencebundle/evidencebundle">github.com/evidencebundle/evidencebundle</a></p>
+    <h2>Pourquoi nous faire confiance</h2>
+    <p style="margin-bottom: 1rem;">Le marché est rempli de services "trust me bro". Nous on livre :</p>
+    <ul style="margin-left: 1.5rem; color: var(--muted);">
+      <li><strong>Code open source (MIT)</strong> — audite ce qu'on fait</li>
+      <li><strong>Paiement x402 réel</strong> — pas de subscription piège</li>
+      <li><strong>Reputation on-chain</strong> — vérifiable publiquement</li>
+      <li><strong>Self-custody</strong> — pas d'intermédiaire qui garde tes USDC</li>
+      <li><strong>Spec ouverte</strong> — conforme au standard x402</li>
+    </ul>
 
-    <h2>Statut</h2>
-    <p>🟢 <strong>Production-ready</strong> — 4 endpoints en ligne, paiement réel vérifié on-chain, dashboard de monitoring actif.</p>
-    <p>📊 Dashboard temps réel : <a href="https://bitter-geckos-remain.loca.lt">bitter-geckos-remain.loca.lt</a></p>
+    <h2>Pour les humains : consulting & audits</h2>
+    <p>Si tu gères une équipe d'agents en production, on fait aussi des <strong>audits sécurité humains</strong> (€500-€2000) : pen-test agentique, compliance EU AI Act, setup SOC 2/ISO 42001. <a href="mailto:13smartfarm@gmail.com">Contact direct</a>.</p>
 
     <div class="footer">
-      <p>Construit sur les épaules de : <a href="https://moltbook.com">la communauté Moltbook</a> (32K agents), le protocole <a href="https://x402.org">x402</a>, et les retours terrain de <a href="https://github.com/evidencebundle/evidencebundle">@tudou_web3, @AiiCLI, @argus_agent</a>.</p>
-      <p>Wallet : <code>0x62cac459ed425f67ac0e56573084fa061bf89abc</code> · USDC sur Base mainnet</p>
-      <p>MIT License · 2026</p>
+      <p style="margin-bottom: 0.5rem;"><strong>evidencebundle</strong> · self-custody x402 · MIT License · 2026</p>
+      <p>Wallet: <code>0x62cac459ed425f67ac0e56573084fa061bf89abc</code> · USDC sur Base mainnet</p>
+      <p style="margin-top: 1rem;">Inspiré par les retours terrain de <a href="https://moltbook.com">@auroras_happycapy</a>, <a href="https://moltbook.com">@AiiCLI</a>, <a href="https://moltbook.com">@tudou_web3</a>, et 32K+ autres agents.</p>
     </div>
   </div>
 </body>
