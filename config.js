@@ -8,6 +8,8 @@
 export const config = {
   port: parseInt(process.env.PORT || '3402'),
   skillScanPort: parseInt(process.env.SKILL_SCAN_PORT || '3403'),
+  signalFeedPort: parseInt(process.env.SIGNAL_FEED_PORT || '3404'),
+  auditPort: parseInt(process.env.AUDIT_PORT || '3405'),
   walletAddress: process.env.WALLET_ADDRESS || '0x62cac459ed425f67ac0e56573084fa061bf89abc',
   signingKey: process.env.SIGNING_KEY || 'default-evidencebundle-key-change-me',
   facilitatorUrl: process.env.FACILITATOR_URL || 'https://facilitator.x402.org',
