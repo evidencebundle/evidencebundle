@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>evidencebundle — Signed Proofs for Agent Outputs</title>
+  <meta name="description" content="x402-native evidence bundles for AI agents. Pay-per-call in USDC. No account, no API key.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    header { border-bottom: 1px solid #333; padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    h1 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.2rem; color: #00d4aa; margin: 2rem 0 1rem; border-left: 3px solid #00d4aa; padding-left: 0.75rem; }
+    .tagline { color: #888; font-size: 1rem; }
+    .endpoint {
+      background: #141414;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .endpoint h3 { color: #fff; font-size: 1rem; margin-bottom: 0.5rem; font-family: monospace; }
+    .endpoint .price {
+      display: inline-block;
+      background: #00d4aa;
+      color: #0a0a0a;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      float: right;
+    }
+    .endpoint pre {
+      background: #050505;
+      padding: 0.75rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin: 0.5rem 0;
+    }
+    .endpoint .desc { color: #aaa; font-size: 0.95rem; margin: 0.5rem 0; }
+    .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #333; color: #555; font-size: 0.85rem; }
+    .footer a { color: #00d4aa; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+    .highlight { color: #00d4aa; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>evidencebundle</h1>
+      <p class="tagline">Signed evidence bundles for AI agent outputs. <span class="highlight">x402 native</span>. USDC pay-per-call.</p>
+    </header>
+
+    <h2>What it does</h2>
+    <p>You give it a payload (text, JSON, or any content). It returns a cryptographically signed bundle with:</p>
+    <ul style="margin-left: 1.5rem; color: #aaa;">
+      <li>Timestamp (when the bundle was created)</li>
+      <li>Content hash (SHA-256 of your payload)</li>
+      <li>Payment receipt (on-chain USDC tx hash)</li>
+      <li>Provenance chain (who signed, when, on which network)</li>
+    </ul>
+    <p style="margin-top: 1rem;">Verifiable on <a href="https://basescan.org" style="color:#00d4aa">Basescan</a>. No trust required.</p>
+
+    <h2>Endpoints (live now)</h2>
+
+    <div class="endpoint">
+      <span class="price">$0.10 USDC</span>
+      <h3>POST /api/bundle</h3>
+      <p class="desc">Generate a signed evidence bundle for any payload.</p>
+      <pre>curl -X POST https://your-domain/api/bundle \
+  -H "Content-Type: application/json" \
+  -H "X-PAYMENT: &lt;base64-payment-receipt&gt;" \
+  -d '{"payload": "Your content here", "type": "text"}'</pre>
+    </div>
+
+    <div class="endpoint">
+      <span class="price">$0.50 USDC</span>
+      <h3>POST /api/skill-scan</h3>
+      <p class="desc">Scan a SKILL.md for security flaws. Returns score 0-100 and findings with fixes.</p>
+      <pre>curl -X POST https://your-domain/api/skill-scan \
+  -H "Content-Type: application/json" \
+  -H "X-PAYMENT: &lt;base64-payment-receipt&gt;" \
+  -d '{"skill_content": "# Your SKILL.md content..."}'</pre>
+    </div>
+
+    <h2>How it works</h2>
+    <p>The server returns <code>402 Payment Required</code> if no X-PAYMENT header is sent. To pay:</p>
+    <ol style="margin-left: 1.5rem; color: #aaa;">
+      <li>Send USDC (on Base) to the recipient address</li>
+      <li>Get the transaction hash from your wallet</li>
+      <li>Encode the payment receipt as base64 JSON</li>
+      <li>Retry with <code>X-PAYMENT: &lt;receipt&gt;</code> header</li>
+    </ol>
+    <p style="margin-top: 1rem;">Receipt format:</p>
+    <pre>{
+  "txHash": "0x...",
+  "amount": "0.10",
+  "currency": "USDC",
+  "payer": "0x...",
+  "network": "base-mainnet"
+}</pre>
+
+    <h2>Who is it for</h2>
+    <ul style="margin-left: 1.5rem; color: #aaa;">
+      <li><strong>Agents selling outputs to humans</strong> — show real proof, not just "trust me"</li>
+      <li><strong>Skill marketplace operators</strong> — verify skills before install</li>
+      <li><strong>Compliance teams</strong> — audit trail for AI decisions</li>
+      <li><strong>Multi-agent systems</strong> — provenance between agents</li>
+    </ul>
+
+    <h2>Network</h2>
+    <p>USDC on <strong>Base mainnet</strong> (chain ID 8453). USDC contract: <code style="color:#aaa;">0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></p>
+
+    <div class="footer">
+      <p><strong>No KYC. No account. No API key.</strong> Wallet-to-wallet payment, signed on-chain.</p>
+      <p style="margin-top: 1rem;">Built on the <a href="https://x402.org">x402 protocol</a>. Inspired by the 5 documented wallet mistakes that cost agents $12M in 2025.</p>
+      <p style="margin-top: 1rem;">Contact: hello@evidencebundle.tech</p>
+    </div>
+  </div>
+</body>
+</html>
