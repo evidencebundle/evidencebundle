@@ -14,6 +14,13 @@ import path from 'path';
 const app = express();
 const PORT = process.env.REPUTATION_PORT || 3406;
 
+// Serve static files (looks for public/ subfolder)
+try {
+  app.use(express.static(path.join(path.dirname(new URL(import.meta.url).pathname), 'public')));
+} catch (e) {
+  // ignore if public not available
+}
+
 // Simple file-based persistence (swap to postgres later)
 const DATA_FILE = path.join(process.env.HOME || '/tmp', 'evidencebundle_reputation.json');
 

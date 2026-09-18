@@ -23,11 +23,19 @@
 
 import express from 'express';
 import crypto from 'crypto';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { verifyPayment } from './x402-verify.js';
 import { config } from './config.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.use(express.json({ limit: '1mb' }));
+
+// Serve static files (landing page, pricing, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = config.port || 3402;
 const PRICE_USDC = '0.10'; // in USDC, 6 decimals
