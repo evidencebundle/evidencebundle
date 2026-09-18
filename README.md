@@ -4,9 +4,19 @@
 
 Live on Base mainnet. Pay-per-call in USDC. No account, no API key.
 
+## Live proof
+
+**First real x402 payment** (Sep 18, 2026):
+- Tx hash: `0x553fb49156508d86d7364a7720509afe417a76b646ec38207c19c18a9cff1a3f`
+- Block: 51471917
+- Network: Base mainnet
+- Amount: 1 USDC
+- Fees: 0.0000059 ETH (~$0.0008)
+- View on Basescan: https://basescan.org/tx/0x553fb49156508d86d7364a7720509afe417a76b646ec38207c19c18a9cff1a3f
+
 ## What this does
 
-We provide four x402 endpoints that solve real problems documented by the Moltbook community:
+Four x402 endpoints that solve real problems documented by the Moltbook community:
 
 1. **`POST /api/bundle`** — $0.10 USDC
    Take any payload (text, JSON, code), get back a signed evidence bundle with timestamp, SHA-256 hash, payment tx hash, and HMAC signature. Verifiable on-chain.
@@ -26,42 +36,57 @@ The $12M drained in 2025 by 5 documented wallet mistakes. The 13% of skill flaws
 
 Agents need tools that make verification cheap. We make it cheap.
 
+## Live URLs
+
+| Service | URL | Price |
+|---|---|---|
+| Bundle | https://four-clouds-rush.loca.lt | $0.10 |
+| Skill-Scan | https://odd-numbers-buy.loca.lt | $0.50 |
+| Signal-Feed | https://fair-pens-know.loca.lt | $0.05 |
+| Audit-Pipeline | https://shaggy-zoos-pick.loca.lt | $1.00 |
+| Dashboard | https://better-parents-glow.loca.lt | gratuit |
+
 ## Quick start
 
 ```bash
-# 1. Install
+# Install
 npm install
 
-# 2. Run all 4 endpoints (each in a separate terminal)
-node server.js           # port 3402 - /api/bundle
-node skill-scan.js       # port 3403 - /api/skill-scan
-node signal-feed.js      # port 3404 - /api/signal
-node audit-pipeline.js   # port 3405 - /api/audit-pipeline
+# Run all 4 endpoints (each in a separate terminal)
+npm start              # port 3402 - /api/bundle
+npm run skill-scan     # port 3403 - /api/skill-scan
+npm run signal-feed    # port 3404 - /api/signal
+npm run audit-pipeline # port 3405 - /api/audit-pipeline
+npm run dashboard      # port 3410 - dashboard
+npm run mcp            # MCP server for agent integration
 
-# 3. Discovery
+# Discovery
 curl http://localhost:3402/.well-known/x402-discovery
 ```
 
-## Try it
+## MCP server
 
-**Discovery endpoint** (live):
-```
-GET /.well-known/x402-discovery
-```
+For AI agents to discover and call our tools via Model Context Protocol:
 
-Returns the full catalog with prices, addresses, and payment instructions.
-
-**Example call**:
 ```bash
-curl -X POST http://localhost:3402/api/bundle \
-  -H "Content-Type: application/json" \
-  -H "X-PAYMENT: <base64-encoded-payment-receipt>" \
-  -d '{"payload": "Hello world"}'
+npm run mcp
 ```
+
+Tools exposed:
+- `sign_bundle` — Generate signed evidence bundle
+- `scan_skill` — Audit SKILL.md
+- `get_signal` — Get market intelligence
+- `audit_pipeline` — Audit multi-agent pipeline logs
+- `get_discovery` — Get full x402 catalog
+
+## OpenAPI spec
+
+Full specification in `openapi.yaml` — compatible with any OpenAPI tooling (Postman, Stoplight, etc.).
 
 ## Payment format
 
 X-PAYMENT header is a base64-encoded JSON receipt:
+
 ```json
 {
   "txHash": "0x...",
@@ -83,9 +108,31 @@ Send USDC on Base to `0x62cac459ed425f67ac0e56573084fa061bf89abc`, then call wit
 ## Tech
 
 - Node.js 20+
-- Express
+- Express 4
 - x402 protocol (HTTP 402 Payment Required)
 - EIP-3009 transferWithAuthorization (USDC on Base)
+- MCP SDK for agent integration
+- LocalTunnel for public exposure
+- GitHub for code distribution
+
+## Project structure
+
+```
+evidencebundle/
+├── server.js              # /api/bundle endpoint
+├── skill-scan.js          # /api/skill-scan endpoint
+├── signal-feed.js         # /api/signal endpoint
+├── audit-pipeline.js      # /api/audit-pipeline endpoint
+├── dashboard.js           # FR dashboard
+├── mcp-server.mjs         # MCP server wrapper
+├── x402-verify.js         # Shared payment verifier
+├── config.js              # Shared config
+├── openapi.yaml           # OpenAPI 3.0 spec
+├── public/index.html      # Landing page (FR)
+├── test.js                # Test script
+├── package.json
+└── README.md              # This file
+```
 
 ## Inspiration
 
@@ -96,6 +143,8 @@ This project is built on the shoulders of:
 - @tudou_web3 ($12M mistakes field report)
 - @AiiCLI (OWASP Agentic Top 10 + supply chain research)
 - @argus_agent (skill marketplace audits)
+- @Phoenix402 (real x402 revenue data)
+- @hermessol (transparent failure reporting)
 
 ## License
 
