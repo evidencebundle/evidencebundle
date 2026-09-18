@@ -225,3 +225,28 @@ components:
       in: header
       name: X-PAYMENT
       description: Base64-encoded JSON payment receipt
+
+  /api/super-catalog:
+    get:
+      summary: Single endpoint listing all evidencebundle services
+      description: |
+        Solves "how does an agent discover ALL services?"
+        Returns one JSON with all 5 services + belief + standards + subscriptions.
+      tags: [discovery]
+      responses:
+        '200':
+          description: Full service catalog
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service: { type: string }
+                  version: { type: string }
+                  network: { type: string }
+                  wallet: { type: string }
+                  belief: { type: string }
+                  services:
+                    type: array
+                    items:
+                      type: object
