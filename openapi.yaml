@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: evidencebundle x402 API
+  description: |
+    Signed evidence bundles, security audits, market signals, and multi-agent pipeline
+    audits for AI agents. All endpoints accept USDC payments via the x402 protocol on Base mainnet.
+
+    ## Payment
+
+    All paid endpoints return `402 Payment Required` when called without an `X-PAYMENT` header.
+    The 402 response includes pricing, network, and recipient wallet.
+
+    To pay:
+    1. Send USDC on Base to `0x62cac459ed425f67ac0e56573084fa061bf89abc`
+    2. Get the transaction hash from your wallet
+    3. Encode the payment receipt as base64 JSON
+    4. Retry with `X-PAYMENT: <base64>` header
+
+    Receipt format:
+    ```json
+    {
+      "txHash": "0x...",
+      "amount": "0.10",
+      "currency": "USDC",
+      "payer": "0x...",
+      "network": "base-mainnet"
+    }
+    ```
+
+  version: 0.2.0
+  contact:
+    name: evidencebundle
+    url: https://github.com/evidencebundle/evidencebundle
+
+servers:
+  - url: https://petite-friends-nail.loca.lt
+    description: Bundle endpoint (production)
+  - url: https://tender-sides-joke.loca.lt
+    description: Skill-scan endpoint (production)
+  - url: https://legal-bugs-push.loca.lt
+    description: Signal-feed endpoint (production)
+  - url: https://empty-swans-draw.loca.lt
+    description: Audit-pipeline endpoint (production)
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: health
+      security: []
+      responses:
+        '200':
+          description: Service status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+                  service: { type: string }
+                  price: { type: string }
+                  network: { type: string }
+                  wallet: { type: string }
+
+  /.well-known/x402-discovery:
+    get:
+      summary: x402 discovery document
+      operationId: discovery
+      security: []
+      responses:
+        '200':
+          description: Full service catalog with pricing
+
+  /api/bundle:
+    post:
+      summary: Generate signed evidence bundle
+      operationId: createBundle
+      description: Take any payload, get a signed bundle with timestamp, SHA-256 hash, and on-chain payment reference.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [payload]
+              properties:
+                payload:
+                  type: string
+                  description: Content to seal in the bundle
+                type:
+                  type: string
+                  enum: [text, json, markdown]
+                  default: text
+      responses:
+        '200':
+          description: Signed bundle
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  bundle:
+                    type: object
+                    properties:
+                      bundleId: { type: string }
+                      timestamp: { type: string }
+                      contentHash: { type: string }
+                      payment:
+                        type: object
+                        properties:
+                          txHash: { type: string }
+                          amount: { type: string }
+                      provenance:
+                        type: object
+                        properties:
+                          signature: { type: string }
+                          verifiable_at: { type: string }
+        '402':
+          description: Payment required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: { type: string, enum: [payment_required] }
+                  price: { type: string }
+                  recipient: { type: string }
+
+  /api/skill-scan:
+    post:
+      summary: Audit SKILL.md for security flaws
+      operationId: skillScan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [skill_content]
+              properties:
+                skill_content:
+                  type: string
+                skill_url:
+                  type: string
+      responses:
+        '200':
+          description: Scan results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  scan:
+                    type: object
+                    properties:
+                      score: { type: integer, minimum: 0, maximum: 100 }
+                      findings:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            severity: { type: string }
+                            finding: { type: string }
+                            fix: { type: string }
+        '402':
+          description: Payment required
+
+  /api/signal:
+    post:
+      summary: Get market intelligence signal
+      operationId: signalFeed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  type: string
+                  enum: [crypto, polymarket, moltbook, weather]
+                  default: crypto
+                params:
+                  type: object
+      responses:
+        '200':
+          description: Signal data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  signal:
+                    type: object
+        '402':
+          description: Payment required
+
+  /api/audit-pipeline:
+    post:
+      summary: Audit multi-agent pipeline for security issues
+      operationId: auditPipeline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pipeline_log]
+              properties:
+                pipeline_log:
+                  type: string
+      responses:
+        '200':
+          description: Audit results
+        '402':
+          description: Payment required
+
+components:
+  securitySchemes:
+    X-PAYMENT:
+      type: apiKey
+      in: header
+      name: X-PAYMENT
+      description: Base64-encoded JSON payment receipt
