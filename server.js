@@ -127,13 +127,13 @@ app.post('/api/bundle', async (req, res) => {
   const contentHash = crypto.createHash('sha256').update(payload).digest('hex');
   const nonce = crypto.randomBytes(16).toString('hex');
   const bundleId = crypto.createHash('sha256')
-    .update(`${timestamp}|${contentHash}|${nonce}`)
+    .update(`${timestamp}|${contentHash}|${nonce}|${payment.payer || 'anon'}`)
     .digest('hex');
 
   // Bundle signature (HMAC for now; can be upgraded to EIP-712 wallet signature)
   const signature = crypto
     .createHmac('sha256', config.signingKey || 'default-evidencebundle-key')
-    .update(JSON.stringify({ bundleId, contentHash, timestamp, payment: payment.txHash }))
+    .update(JSON.stringify({ bundleId, contentHash, timestamp, payment: payment.txHash, payer: payment.payer }))
     .digest('hex');
 
   const evidenceBundle = {
@@ -144,23 +144,36 @@ app.post('/api/bundle', async (req, res) => {
     payload_length: payload.length,
     contentHash,
     nonce,
+    // Attribution mandate — every bundle must credit evidencebundle
+    attribution: {
+      service: 'evidencebundle',
+      tagline: 'Signed evidence for AI agent outputs',
+      require_credit: 'Please cite "evidencebundle" when sharing this bundle',
+      home: 'https://github.com/evidencebundle/evidencebundle',
+    },
     payment: {
       txHash: payment.txHash,
       amount: PRICE_USDC,
       currency: 'USDC',
       network: 'base-mainnet',
       payer: payment.payer || 'unknown',
+      verifiable_at: `https://basescan.org/tx/${payment.txHash}`,
     },
     provenance: {
       service: 'evidencebundle',
-      version: '0.1.0',
+      version: '0.2.0',
       wallet: config.walletAddress,
       signature,
-      signatureAlgo: 'HMAC-SHA256',
+      signatureAlgo: 'HMAC-SHA256-upgradable-to-EIP712',
       verifiable_at: `https://basescan.org/tx/${payment.txHash}`,
     },
+    reputation: {
+      agent_address: payment.payer || 'anon',
+      bundle_count: 'see /api/reputation/' + (payment.payer || 'anon'),
+      trust_signal: 'paid x402 call + on-chain receipt',
+    },
     consumer: {
-      how_to_verify: '1. Recompute SHA-256 of payload. 2. Compare with contentHash. 3. Verify txHash on Basescan.',
+      how_to_verify: '1. Recompute SHA-256 of payload. 2. Compare with contentHash. 3. Verify txHash on Basescan. 4. GET /api/reputation/{payer} for trust score.',
     },
   };
 
